@@ -1,0 +1,71 @@
+# ============================================
+# .gitignore - Chest X-Ray Pneumonia Detection
+# ============================================
+
+# === DỮ LIỆU ẢNH GỐC (quá lớn cho Git) ===
+chest_xray/train/
+chest_xray/test/
+chest_xray/val/
+
+# === DỮ LIỆU ĐÃ CHIA LẠI (symbolic links) ===
+chest_xray/data_resplit/
+
+# === FEATURES ĐÃ TRÍCH XUẤT (.npy) ===
+chest_xray/features_resnet50/
+
+# === MÔ HÌNH ĐÃ TRAIN (.joblib) ===
+chest_xray/models_stacking/
+
+# === KẾT QUẢ ===
+chest_xray/results_stacking/
+
+# === WEBAPP UPLOADS ===
+chest_xray/webapp/static/uploads/
+
+# === Python ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+*.egg
+dist/
+build/
+.eggs/
+
+# === Jupyter Notebook ===
+.ipynb_checkpoints/
+*.ipynb
+
+# === Environments ===
+.env
+.venv/
+env/
+venv/
+
+# === IDE ===
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# === OS ===
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# === Logs ===
+*.log
+nohup.out
+
+# === Large/temporary files ===
+*.npy
+*.npz
+*.h5
+*.hdf5
+*.joblib
+*.pkl
+*.pickle
+*.tar.gz
+*.zip

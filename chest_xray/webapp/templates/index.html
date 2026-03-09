@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chẩn đoán Viêm phổi từ X-quang</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { 50: '#ecfeff', 100: '#cffafe', 200: '#a5f3fc', 400: '#22d3ee', 500: '#06b6d4', 600: '#0891b2', 700: '#0e7490', 800: '#155e75', 900: '#164e63' },
+                        dark: { 700: '#1e293b', 800: '#0f172a', 900: '#020617' }
+                    },
+                    animation: {
+                        'scan': 'scan 2s ease-in-out infinite',
+                        'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                    },
+                    keyframes: {
+                        scan: {
+                            '0%, 100%': { top: '0%' },
+                            '50%': { top: '95%' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { opacity: '0.6', boxShadow: '0 0 15px rgba(6,182,212,0.4)' },
+                            '50%': { opacity: '1', boxShadow: '0 0 30px rgba(6,182,212,0.8)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Apply saved theme BEFORE render to prevent flash -->
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="bg-gray-50 dark:bg-dark-900 text-gray-800 dark:text-gray-100 min-h-screen transition-colors duration-300">
+
+    <!-- ============ HEADER ============ -->
+    <header class="bg-white/80 dark:bg-dark-800/80 backdrop-blur-md border-b border-gray-200 dark:border-primary-700/30 sticky top-0 z-50 transition-colors duration-300">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-primary-400 to-blue-500 flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold bg-gradient-to-r from-primary-600 dark:from-primary-400 to-blue-600 dark:to-blue-400 bg-clip-text text-transparent">
+                        AI X-Ray Diagnosis
+                    </h1>
+                    <p class="text-xs text-gray-400 dark:text-gray-500">ResNet50 + Stacking Ensemble</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <!-- Theme Toggle Button -->
+                <button id="themeToggle"
+                        class="relative z-10 w-14 h-7 rounded-full bg-gray-200 dark:bg-gray-700 cursor-pointer transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary-500/50"
+                        type="button"
+                        aria-label="Chuyển đổi giao diện sáng/tối">
+                    <div id="themeThumb" class="pointer-events-none absolute top-0.5 left-0.5 w-6 h-6 rounded-full bg-white shadow-md flex items-center justify-center transition-transform duration-300 dark:translate-x-7">
+                        <!-- Sun (light) -->
+                        <svg class="w-3.5 h-3.5 text-amber-500 block dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"/>
+                        </svg>
+                        <!-- Moon (dark) -->
+                        <svg class="w-3.5 h-3.5 text-blue-400 hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
+                        </svg>
+                    </div>
+                </button>
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                    <span class="text-xs text-gray-500 dark:text-gray-400">Sẵn sàng</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Theme toggle script — inline để tránh lỗi cache/load order -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var btn = document.getElementById('themeToggle');
+            if (btn) {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var html = document.documentElement;
+                    if (html.classList.contains('dark')) {
+                        html.classList.remove('dark');
+                        localStorage.setItem('theme', 'light');
+                    } else {
+                        html.classList.add('dark');
+                        localStorage.setItem('theme', 'dark');
+                    }
+                });
+            }
+        });
+    </script>
+
+    <!-- ============ MAIN CONTENT ============ -->
+    <main class="max-w-6xl mx-auto px-4 py-8">
+
+        <!-- Info Banner -->
+        <div class="mb-8 p-4 rounded-xl bg-white/70 dark:bg-dark-800/50 border border-primary-100 dark:border-primary-700/20 shadow-sm dark:shadow-none transition-colors duration-300">
+            <div class="flex flex-wrap gap-6 justify-center text-center text-sm">
+                <div>
+                    <span class="text-primary-600 dark:text-primary-400 font-semibold text-lg">95.94%</span>
+                    <p class="text-gray-500 text-xs">Accuracy</p>
+                </div>
+                <div class="border-l border-gray-200 dark:border-gray-700 pl-6">
+                    <span class="text-primary-600 dark:text-primary-400 font-semibold text-lg">96.31%</span>
+                    <p class="text-gray-500 text-xs">Recall</p>
+                </div>
+                <div class="border-l border-gray-200 dark:border-gray-700 pl-6">
+                    <span class="text-primary-600 dark:text-primary-400 font-semibold text-lg">98.12%</span>
+                    <p class="text-gray-500 text-xs">Precision</p>
+                </div>
+                <div class="border-l border-gray-200 dark:border-gray-700 pl-6">
+                    <span class="text-primary-600 dark:text-primary-400 font-semibold text-lg">0.9888</span>
+                    <p class="text-gray-500 text-xs">AUC-ROC</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2 Column Layout -->
+        <div class="grid lg:grid-cols-2 gap-8">
+
+            <!-- ======= LEFT: Upload Area ======= -->
+            <div class="space-y-6">
+                <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-200 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-primary-500 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    Tải ảnh X-quang
+                </h2>
+
+                <!-- Drop Zone -->
+                <div id="dropZone"
+                     class="relative border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-2xl p-8 text-center
+                            bg-white dark:bg-transparent
+                            hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/10
+                            transition-all duration-300 cursor-pointer group shadow-sm dark:shadow-none">
+                    <input type="file" id="fileInput" accept="image/*" class="hidden">
+
+                    <div id="uploadPrompt" class="space-y-4">
+                        <div class="mx-auto w-16 h-16 rounded-full bg-gray-100 dark:bg-dark-700 flex items-center justify-center
+                                    group-hover:bg-primary-100 dark:group-hover:bg-primary-900/30 transition-colors">
+                            <svg class="w-8 h-8 text-gray-400 dark:text-gray-500 group-hover:text-primary-500 dark:group-hover:text-primary-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-gray-600 dark:text-gray-300 font-medium">Kéo thả ảnh vào đây</p>
+                            <p class="text-gray-400 dark:text-gray-500 text-sm mt-1">hoặc <span class="text-primary-500 dark:text-primary-400 underline">nhấn để chọn file</span></p>
+                            <p class="text-gray-400 dark:text-gray-600 text-xs mt-2">Hỗ trợ: JPEG, PNG • Ảnh X-quang ngực</p>
+                        </div>
+                    </div>
+
+                    <!-- Image Preview -->
+                    <div id="previewArea" class="hidden relative">
+                        <div class="relative inline-block overflow-hidden rounded-xl">
+                            <img id="previewImage" src="" alt="X-ray preview"
+                                 class="max-h-80 mx-auto rounded-xl shadow-lg shadow-black/10 dark:shadow-primary-900/20">
+                            <!-- Scanning Line -->
+                            <div id="scanLine" class="hidden absolute left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-primary-400 to-transparent scan-line">
+                                <div class="w-full h-4 bg-gradient-to-b from-primary-400/20 to-transparent -mt-2"></div>
+                            </div>
+                        </div>
+                        <p id="fileName" class="text-gray-500 text-sm mt-3"></p>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex gap-3">
+                    <button id="btnPredict" disabled
+                            class="flex-1 py-3 px-6 rounded-xl font-semibold text-sm text-white
+                                   bg-gradient-to-r from-primary-600 to-blue-600
+                                   hover:from-primary-500 hover:to-blue-500
+                                   disabled:from-gray-300 disabled:to-gray-300 disabled:text-gray-400
+                                   dark:disabled:from-gray-700 dark:disabled:to-gray-700 dark:disabled:text-gray-500
+                                   disabled:cursor-not-allowed
+                                   transition-all duration-300 flex items-center justify-center gap-2 shadow-md disabled:shadow-none">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                        <span id="btnText">Chẩn đoán AI</span>
+                    </button>
+                    <button id="btnReset"
+                            class="py-3 px-5 rounded-xl font-semibold text-sm border
+                                   border-gray-300 dark:border-gray-600
+                                   hover:border-gray-400 hover:bg-gray-100 dark:hover:bg-dark-700
+                                   transition-all duration-300
+                                   text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ======= RIGHT: Results Area ======= -->
+            <div class="space-y-6">
+                <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-200 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-primary-500 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    Kết quả chẩn đoán
+                </h2>
+
+                <!-- Loading State -->
+                <div id="loadingState" class="hidden">
+                    <div class="p-8 rounded-2xl bg-white dark:bg-dark-800/60 border border-primary-100 dark:border-primary-700/30 text-center space-y-4 shadow-sm dark:shadow-none">
+                        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full border-2 border-primary-500/30">
+                            <div class="w-10 h-10 border-2 border-primary-400 border-t-transparent rounded-full animate-spin"></div>
+                        </div>
+                        <div>
+                            <p class="text-primary-600 dark:text-primary-400 font-medium">AI đang phân tích ảnh X-quang...</p>
+                            <p class="text-gray-400 dark:text-gray-500 text-xs mt-1" id="loadingStep">Đang trích xuất đặc trưng ResNet50</p>
+                        </div>
+                        <div class="flex justify-center gap-1 mt-3">
+                            <div class="w-2 h-2 rounded-full bg-primary-400 animate-pulse" style="animation-delay: 0s"></div>
+                            <div class="w-2 h-2 rounded-full bg-primary-400 animate-pulse" style="animation-delay: 0.2s"></div>
+                            <div class="w-2 h-2 rounded-full bg-primary-400 animate-pulse" style="animation-delay: 0.4s"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div id="emptyState" class="p-12 rounded-2xl bg-white/50 dark:bg-dark-800/30 border border-gray-200 dark:border-gray-800 text-center shadow-sm dark:shadow-none transition-colors duration-300">
+                    <svg class="w-16 h-16 mx-auto text-gray-300 dark:text-gray-700 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                    </svg>
+                    <p class="text-gray-400 dark:text-gray-600">Tải ảnh X-quang lên để bắt đầu chẩn đoán</p>
+                </div>
+
+                <!-- Result Card -->
+                <div id="resultCard" class="hidden animate-slide-up">
+                    <!-- Diagnosis Badge -->
+                    <div id="resultBadge" class="p-6 rounded-2xl border-2 text-center mb-4 transition-all">
+                        <div class="flex items-center justify-center gap-2 mb-2">
+                            <span id="resultIcon" class="text-3xl"></span>
+                            <h3 id="resultLabel" class="text-2xl font-bold"></h3>
+                        </div>
+                        <p id="resultConfidence" class="text-sm opacity-80"></p>
+                    </div>
+
+                    <!-- Probability Bars -->
+                    <div class="p-5 rounded-2xl bg-white dark:bg-dark-800/60 border border-gray-200 dark:border-gray-700/50 space-y-4 mb-4 shadow-sm dark:shadow-none transition-colors duration-300">
+                        <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-3">Xác suất dự đoán</h4>
+                        
+                        <!-- Normal -->
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-green-600 dark:text-green-400 flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                    NORMAL
+                                </span>
+                                <span id="probNormal" class="text-gray-600 dark:text-gray-300 font-mono">0%</span>
+                            </div>
+                            <div class="w-full h-2.5 bg-gray-200 dark:bg-dark-700 rounded-full overflow-hidden">
+                                <div id="barNormal" class="h-full bg-gradient-to-r from-green-500 to-emerald-400 rounded-full transition-all duration-1000 ease-out" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Pneumonia -->
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-red-600 dark:text-red-400 flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                    </svg>
+                                    PNEUMONIA
+                                </span>
+                                <span id="probPneumonia" class="text-gray-600 dark:text-gray-300 font-mono">0%</span>
+                            </div>
+                            <div class="w-full h-2.5 bg-gray-200 dark:bg-dark-700 rounded-full overflow-hidden">
+                                <div id="barPneumonia" class="h-full bg-gradient-to-r from-red-500 to-orange-400 rounded-full transition-all duration-1000 ease-out" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tech Details -->
+                    <details class="p-4 rounded-2xl bg-gray-50 dark:bg-dark-800/40 border border-gray-200 dark:border-gray-700/30 transition-colors duration-300">
+                        <summary class="text-sm text-gray-500 dark:text-gray-400 cursor-pointer hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+                            Chi tiết kỹ thuật
+                        </summary>
+                        <div class="mt-3 text-xs text-gray-500 space-y-1" id="techDetails">
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pipeline Info -->
+        <div class="mt-12 p-6 rounded-2xl bg-white/50 dark:bg-dark-800/30 border border-gray-200 dark:border-gray-800 shadow-sm dark:shadow-none transition-colors duration-300">
+            <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-4 text-center">Luồng xử lý AI Pipeline</h3>
+            <div class="flex flex-wrap items-center justify-center gap-2 text-xs">
+                <span class="px-3 py-1.5 rounded-lg bg-primary-50 dark:bg-primary-900/30 border border-primary-200 dark:border-primary-700/30 text-primary-700 dark:text-primary-400">📷 Ảnh X-quang</span>
+                <span class="text-gray-400 dark:text-gray-600">→</span>
+                <span class="px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-dark-700 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400">CLAHE</span>
+                <span class="text-gray-400 dark:text-gray-600">→</span>
+                <span class="px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-dark-700 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400">224×224</span>
+                <span class="text-gray-400 dark:text-gray-600">→</span>
+                <span class="px-3 py-1.5 rounded-lg bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700/30 text-blue-700 dark:text-blue-400">ResNet50</span>
+                <span class="text-gray-400 dark:text-gray-600">→</span>
+                <span class="px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-dark-700 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400">2054-d</span>
+                <span class="text-gray-400 dark:text-gray-600">→</span>
+                <span class="px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-dark-700 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400">PCA</span>
+                <span class="text-gray-400 dark:text-gray-600">→</span>
+                <span class="px-3 py-1.5 rounded-lg bg-purple-50 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-700/30 text-purple-700 dark:text-purple-400">Stacking</span>
+                <span class="text-gray-400 dark:text-gray-600">→</span>
+                <span class="px-3 py-1.5 rounded-lg bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700/30 text-green-700 dark:text-green-400">✅ Kết quả</span>
+            </div>
+        </div>
+    </main>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="mt-12 py-6 border-t border-gray-200 dark:border-gray-800 transition-colors duration-300">
+        <div class="max-w-6xl mx-auto px-4 text-center text-xs text-gray-400 dark:text-gray-600">
+            <p>⚠️ Công cụ hỗ trợ sàng lọc — Không thay thế chẩn đoán của bác sĩ chuyên khoa</p>
+            <p class="mt-1">ResNet50 (frozen) + PCA + Stacking Ensemble (SVM + RF + XGBoost) • Accuracy: 95.94%</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

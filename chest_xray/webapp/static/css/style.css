@@ -1,0 +1,85 @@
+/* ============================================
+   SCANNING ANIMATION & CUSTOM STYLES
+   ============================================ */
+
+/* Scan line animation */
+.scan-line {
+    animation: scanMove 2s ease-in-out infinite;
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.6),
+                0 0 30px rgba(6, 182, 212, 0.3),
+                0 0 60px rgba(6, 182, 212, 0.1);
+}
+
+@keyframes scanMove {
+    0%, 100% { top: 0%; }
+    50% { top: 96%; }
+}
+
+/* Glow effect on scan container */
+.scanning-active {
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.15),
+                inset 0 0 20px rgba(6, 182, 212, 0.05);
+}
+
+/* Drag over effect */
+.drag-over {
+    border-color: #06b6d4 !important;
+    background-color: rgba(6, 182, 212, 0.08) !important;
+    transform: scale(1.01);
+}
+
+/* Result badge styles */
+.result-normal {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05));
+    border-color: rgba(34, 197, 94, 0.5);
+}
+
+.result-pneumonia {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
+    border-color: rgba(239, 68, 68, 0.5);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0f172a;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+}
+
+/* Smooth transitions */
+* {
+    scroll-behavior: smooth;
+}
+
+/* Disable button animation when loading */
+.btn-loading {
+    pointer-events: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    100% { left: 100%; }
+}
