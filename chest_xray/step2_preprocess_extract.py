@@ -56,7 +56,7 @@ print("=" * 80)
 
 # Kiểm tra data đã chia
 if not os.path.exists(CONFIG['data_dir']):
-    print("❌ Chưa có data_resplit/. Hãy chạy step1_resplit_data.py trước!")
+    print("Chưa có data_resplit/. Hãy chạy step1_resplit_data.py trước!")
     sys.exit(1)
 
 # ======================== HÀM TIỀN XỬ LÝ ========================
@@ -174,7 +174,7 @@ def augment_image(img_array, rotation_range=15):
     1. Horizontal flip (lật ngang)
     2. Random rotation (xoay ±15°)
     
-    ⚠️ KHÔNG vertical flip (vòm hoành luôn ở dưới trong X-ray thực tế)
+    KHÔNG vertical flip (vòm hoành luôn ở dưới trong X-ray thực tế)
     
     Returns: list of augmented images (numpy arrays)
     """
@@ -276,7 +276,7 @@ X_train, y_train, glcm_train = process_split(
 
 n_normal_train = np.sum(y_train == 0)
 n_pneumonia_train = np.sum(y_train == 1)
-print(f"\n  ✅ Train: {X_train.shape[0]} ảnh (sau augmentation)")
+print(f"\n  Train: {X_train.shape[0]} ảnh (sau augmentation)")
 print(f"     NORMAL: {n_normal_train}, PNEUMONIA: {n_pneumonia_train}")
 print(f"     Shape: {X_train.shape}, Memory: {X_train.nbytes/(1024**3):.2f} GB")
 
@@ -288,7 +288,7 @@ print(f"{'─'*40}")
 X_val, y_val, glcm_val = process_split(
     'val', CONFIG['data_dir'], CONFIG['target_size'], augment=False
 )
-print(f"\n  ✅ Val: {X_val.shape[0]} ảnh")
+print(f"\n  Val: {X_val.shape[0]} ảnh")
 
 # --- TEST (không augment) ---
 print(f"\n{'─'*40}")
@@ -298,7 +298,7 @@ print(f"{'─'*40}")
 X_test, y_test, glcm_test = process_split(
     'test', CONFIG['data_dir'], CONFIG['target_size'], augment=False
 )
-print(f"\n  ✅ Test: {X_test.shape[0]} ảnh")
+print(f"\n  Test: {X_test.shape[0]} ảnh")
 
 
 # ======================== TRÍCH XUẤT ĐẶC TRƯNG RESNET50 ========================
@@ -308,7 +308,7 @@ print("[3] TRÍCH XUẤT ĐẶC TRƯNG VỚI RESNET50")
 print("=" * 80)
 
 # Load ResNet50 frozen
-print("\n📥 Loading ResNet50 (ImageNet weights, frozen)...")
+print("\nLoading ResNet50 (ImageNet weights, frozen)...")
 base_model = ResNet50(
     weights='imagenet',
     include_top=False,        # Bỏ lớp phân loại cuối
@@ -317,7 +317,7 @@ base_model = ResNet50(
 )
 base_model.trainable = False  # Đóng băng toàn bộ
 
-print(f"  ✅ ResNet50 loaded")
+print(f"     ResNet50 loaded")
 print(f"     Layers: {len(base_model.layers)}")
 print(f"     Output: {base_model.output_shape[-1]} dimensions")
 print(f"     Trainable params: 0 (100% frozen)")
@@ -340,17 +340,17 @@ def extract_features_batch(model, X, batch_size=32):
 
 
 # Extract features cho cả 3 tập
-print("\n📊 Trích xuất features từ Train set...")
+print("\n Trích xuất features từ Train set...")
 feat_train = extract_features_batch(base_model, X_train, CONFIG['batch_size'])
-print(f"  ✅ Train features: {feat_train.shape}")
+print(f"   Train features: {feat_train.shape}")
 
-print("\n📊 Trích xuất features từ Val set...")
+print("\n Trích xuất features từ Val set...")
 feat_val = extract_features_batch(base_model, X_val, CONFIG['batch_size'])
-print(f"  ✅ Val features: {feat_val.shape}")
+print(f"   Val features: {feat_val.shape}")
 
-print("\n📊 Trích xuất features từ Test set...")
+print("\n Trích xuất features từ Test set...")
 feat_test = extract_features_batch(base_model, X_test, CONFIG['batch_size'])
-print(f"  ✅ Test features: {feat_test.shape}")
+print(f"   Test features: {feat_test.shape}")
 
 # Giải phóng RAM (ảnh gốc không cần nữa)
 del X_train, X_val, X_test
@@ -360,13 +360,13 @@ gc.collect()
 # ======================== NỐI GLCM VÀO RESNET (NẾU CÓ) ========================
 
 if CONFIG['use_glcm'] and glcm_train is not None:
-    print(f"\n🔗 Nối GLCM features ({glcm_train.shape[1]} dims) vào ResNet50 ({feat_train.shape[1]} dims)...")
+    print(f"\n Nối GLCM features ({glcm_train.shape[1]} dims) vào ResNet50 ({feat_train.shape[1]} dims)...")
     
     feat_train = np.hstack([feat_train, glcm_train])
     feat_val = np.hstack([feat_val, glcm_val])
     feat_test = np.hstack([feat_test, glcm_test])
     
-    print(f"  ✅ Hybrid vector: {feat_train.shape[1]} dimensions "
+    print(f"   Hybrid vector: {feat_train.shape[1]} dimensions "
           f"({feat_train.shape[1]-6} ResNet50 + 6 GLCM)")
 
 # ======================== PHÂN TÍCH CHẤT LƯỢNG FEATURES ========================
@@ -379,15 +379,15 @@ feature_vars = np.var(feat_train, axis=0)
 low_var = np.sum(feature_vars < 0.01)
 low_var_ratio = low_var / len(feature_vars) * 100
 
-print(f"\n📊 Feature quality:")
+print(f"\n Feature quality:")
 print(f"  Total features: {len(feature_vars)}")
 print(f"  Low variance (<0.01): {low_var} ({low_var_ratio:.1f}%)")
 print(f"  Mean variance: {feature_vars.mean():.4f}")
 
 if low_var_ratio > 40:
-    print(f"  ⚠️ CẢNH BÁO: {low_var_ratio:.1f}% features có variance thấp")
+    print(f"   CẢNH BÁO: {low_var_ratio:.1f}% features có variance thấp")
 else:
-    print(f"  ✅ Chất lượng features tốt! Chỉ {low_var_ratio:.1f}% low-variance")
+    print(f"   Chất lượng features tốt! Chỉ {low_var_ratio:.1f}% low-variance")
 
 
 # ======================== LƯU KẾT QUẢ ========================
@@ -430,15 +430,15 @@ with open(os.path.join(CONFIG['output_dir'], 'features_metadata.json'), 'w') as 
 
 total_mb = (feat_train.nbytes + feat_val.nbytes + feat_test.nbytes) / (1024**2)
 
-print(f"\n✅ Đã lưu tại: {CONFIG['output_dir']}/")
+print(f"\n Đã lưu tại: {CONFIG['output_dir']}/")
 print(f"  feat_train.npy: {feat_train.shape}  ({feat_train.nbytes/(1024**2):.1f} MB)")
 print(f"  feat_val.npy:   {feat_val.shape}  ({feat_val.nbytes/(1024**2):.1f} MB)")
 print(f"  feat_test.npy:  {feat_test.shape}  ({feat_test.nbytes/(1024**2):.1f} MB)")
 print(f"  Tổng: {total_mb:.1f} MB (nhẹ hơn rất nhiều so với lưu ảnh!)")
 
 print(f"\n{'='*80}")
-print("🎉 HOÀN THÀNH BƯỚC 2-4!")
+print(" HOÀN THÀNH BƯỚC 2-4!")
 print(f"{'='*80}")
-print(f"\n⚡ Bước tiếp theo:")
+print(f"\n Bước tiếp theo:")
 print(f"   python chest_xray/step3_train_stacking.py")
 print("=" * 80)

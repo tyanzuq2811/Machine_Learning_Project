@@ -33,20 +33,20 @@ print("  LOADING AI MODELS...")
 print("=" * 60)
 
 # 1. Load Scaler + PCA + Stacking Classifier
-print("📥 Loading StandardScaler...")
+print("Loading StandardScaler...")
 scaler = joblib.load(os.path.join(MODELS_DIR, 'scaler.joblib'))
-print("   ✅ Scaler loaded")
+print("Scaler loaded")
 
-print("📥 Loading PCA...")
+print("Loading PCA...")
 pca = joblib.load(os.path.join(MODELS_DIR, 'pca.joblib'))
-print(f"   ✅ PCA loaded ({pca.n_components_} components)")
+print(f"PCA loaded ({pca.n_components_} components)")
 
-print("📥 Loading Stacking Classifier...")
+print("Loading Stacking Classifier...")
 stacking_clf = joblib.load(os.path.join(MODELS_DIR, 'stacking_classifier.joblib'))
-print("   ✅ Stacking Classifier loaded")
+print("Stacking Classifier loaded")
 
 # 2. Load ResNet50 (frozen feature extractor)
-print("📥 Loading ResNet50 (ImageNet, frozen)...")
+print("Loading ResNet50 (ImageNet, frozen)...")
 import tensorflow as tf
 tf.get_logger().setLevel('ERROR')
 from tensorflow.keras.applications import ResNet50
@@ -59,19 +59,19 @@ resnet_model = ResNet50(
     pooling='avg'
 )
 resnet_model.trainable = False
-print(f"   ✅ ResNet50 loaded ({resnet_model.output_shape[-1]}-dim output)")
+print(f"ResNet50 loaded ({resnet_model.output_shape[-1]}-dim output)")
 
 # 3. GLCM
 try:
     from skimage.feature import graycomatrix, graycoprops
     HAS_GLCM = True
-    print("   ✅ GLCM module available")
+    print("GLCM module available")
 except ImportError:
     HAS_GLCM = False
-    print("   ⚠️ GLCM not available (skimage not installed)")
+    print("GLCM not available (skimage not installed)")
 
 print("=" * 60)
-print("  ✅ ALL MODELS LOADED SUCCESSFULLY!")
+print("ALL MODELS LOADED SUCCESSFULLY!")
 print("=" * 60)
 
 CLASS_NAMES = {0: 'NORMAL', 1: 'PNEUMONIA'}
@@ -277,6 +277,6 @@ async def health_check():
 # ======================== CHẠY SERVER ========================
 if __name__ == "__main__":
     import uvicorn
-    print("\n🚀 Starting server at http://localhost:8088")
+    print("\nStarting server at http://localhost:8088")
     print("   Press Ctrl+C to stop\n")
     uvicorn.run(app, host="0.0.0.0", port=8088)

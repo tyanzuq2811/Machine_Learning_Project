@@ -83,8 +83,8 @@ for split in SPLITS:
             all_images.append((fpath, class_name, pid))
             patient_images[pid].append((fpath, class_name))
 
-print(f"\n📊 Tổng số ảnh: {len(all_images)}")
-print(f"📊 Tổng số bệnh nhân (unique patient ID): {len(patient_images)}")
+print(f"\nTổng số ảnh: {len(all_images)}")
+print(f"Tổng số bệnh nhân (unique patient ID): {len(patient_images)}")
 
 # Thống kê
 normal_patients = [pid for pid, imgs in patient_images.items() 
@@ -97,20 +97,20 @@ mixed_patients = [pid for pid, imgs in patient_images.items()
 normal_count = sum(1 for _, c, _ in all_images if c == 'NORMAL')
 pneumonia_count = sum(1 for _, c, _ in all_images if c == 'PNEUMONIA')
 
-print(f"\n📈 Phân phối ảnh:")
+print(f"\nPhân phối ảnh:")
 print(f"  NORMAL:    {normal_count:4d} ảnh ({normal_count/len(all_images)*100:.1f}%)")
 print(f"  PNEUMONIA: {pneumonia_count:4d} ảnh ({pneumonia_count/len(all_images)*100:.1f}%)")
 print(f"  Tỷ lệ PNEUMONIA:NORMAL = {pneumonia_count/normal_count:.2f}:1")
 
-print(f"\n👤 Phân phối bệnh nhân:")
+print(f"\nPhân phối bệnh nhân:")
 print(f"  NORMAL patients:    {len(normal_patients)}")
 print(f"  PNEUMONIA patients: {len(pneumonia_patients)}")
 if mixed_patients:
-    print(f"  ⚠️ Mixed patients:   {len(mixed_patients)} (cùng patient có cả 2 lớp)")
+    print(f"Mixed patients:   {len(mixed_patients)} (cùng patient có cả 2 lớp)")
 
 # Kiểm tra số ảnh/patient
 imgs_per_patient = [len(imgs) for imgs in patient_images.values()]
-print(f"\n📸 Ảnh/bệnh nhân:")
+print(f"\nẢnh/bệnh nhân:")
 print(f"  Min: {min(imgs_per_patient)}, Max: {max(imgs_per_patient)}, "
       f"Mean: {np.mean(imgs_per_patient):.1f}, Median: {np.median(imgs_per_patient):.0f}")
 
@@ -177,7 +177,7 @@ for fpath, class_name, pid in all_images:
     else:
         test_images.append((fpath, class_name))
 
-print(f"\n📊 Kết quả chia (theo patient grouping):")
+print(f"\nKết quả chia (theo patient grouping):")
 print(f"  {'Tập':<8} {'Patients':>10} {'Ảnh':>8} {'NORMAL':>10} {'PNEUMONIA':>12} {'Tỷ lệ':>8}")
 print(f"  {'-'*56}")
 
@@ -196,7 +196,7 @@ for split_name, split_imgs, split_pids in [
 assert train_pids.isdisjoint(val_pids), "Data leakage: Train ∩ Val ≠ ∅"
 assert train_pids.isdisjoint(test_pids), "Data leakage: Train ∩ Test ≠ ∅"
 assert val_pids.isdisjoint(test_pids), "Data leakage: Val ∩ Test ≠ ∅"
-print("\n✅ Kiểm tra data leakage: PASS (không có patient trùng giữa các tập)")
+print("\nKiểm tra data leakage: PASS (không có patient trùng giữa các tập)")
 
 # ======================== COPY ẢNH VÀO THƯ MỤC MỚI ========================
 print("\n" + "=" * 80)
@@ -228,7 +228,7 @@ for split_name, split_imgs in [('train', train_images), ('val', val_images), ('t
         os.symlink(os.path.abspath(fpath), dst)
         link_count += 1
 
-print(f"✅ Đã tạo {link_count} symbolic links")
+print(f"Đã tạo {link_count} symbolic links")
 
 # ======================== LƯU METADATA ========================
 metadata = {
@@ -251,13 +251,13 @@ for split_name, split_imgs in [('train', train_images), ('val', val_images), ('t
 with open(os.path.join(OUTPUT_DIR, 'split_metadata.json'), 'w') as f:
     json.dump(metadata, f, indent=2)
 
-print(f"\n💾 Metadata lưu tại: {OUTPUT_DIR}/split_metadata.json")
+print(f"\nMetadata lưu tại: {OUTPUT_DIR}/split_metadata.json")
 
 # ======================== TỔNG KẾT ========================
 print(f"\n{'='*80}")
 print("🎉 HOÀN THÀNH BƯỚC 1: TÁI CẤU TRÚC DỮ LIỆU")
 print(f"{'='*80}")
-print(f"\n📁 Cấu trúc mới: {OUTPUT_DIR}/")
+print(f"\nCấu trúc mới: {OUTPUT_DIR}/")
 print(f"  ├─ train/  ({len(train_images)} ảnh)")
 print(f"  │   ├─ NORMAL/")
 print(f"  │   └─ PNEUMONIA/")
@@ -267,6 +267,6 @@ print(f"  │   └─ PNEUMONIA/")
 print(f"  └─ test/   ({len(test_images)} ảnh)")
 print(f"      ├─ NORMAL/")
 print(f"      └─ PNEUMONIA/")
-print(f"\n⚡ Bước tiếp theo:")
+print(f"\nBước tiếp theo:")
 print(f"   python chest_xray/step2_preprocess_extract.py")
 print("=" * 80)
