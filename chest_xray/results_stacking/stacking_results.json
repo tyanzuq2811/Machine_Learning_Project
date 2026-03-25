@@ -1,0 +1,58 @@
+{
+  "stacking_ensemble": {
+    "test_accuracy": 0.9593908629441624,
+    "test_precision": 0.9812206572769953,
+    "test_recall": 0.9631336405529954,
+    "test_f1": 0.9720930232558139,
+    "test_auc_roc": 0.9887581085444246,
+    "val_accuracy": 0.9680672268907563,
+    "overfitting_pct": 0.8676363946593879,
+    "sensitivity": 0.9631336405529954,
+    "specificity": 0.9490445859872612
+  },
+  "individual_models": {
+    "svm": {
+      "accuracy": 0.961082910321489,
+      "precision": 0.9767981438515081,
+      "recall": 0.9700460829493087,
+      "f1": 0.9734104046242774
+    },
+    "rf": {
+      "accuracy": 0.8781725888324873,
+      "precision": 0.862,
+      "recall": 0.9930875576036866,
+      "f1": 0.9229122055674518
+    },
+    "xgb": {
+      "accuracy": 0.9458544839255499,
+      "precision": 0.976303317535545,
+      "recall": 0.9493087557603687,
+      "f1": 0.9626168224299065
+    }
+  },
+  "confusion_matrix": {
+    "TN": 149,
+    "FP": 8,
+    "FN": 16,
+    "TP": 418
+  },
+  "pca": {
+    "original_dim": 2054,
+    "reduced_dim": 997,
+    "variance_explained": 0.9500585794448853
+  },
+  "config": {
+    "features_dir": "/hdd3/nckh-AIAgent/tyanzuq/ML/chest_xray/features_resnet50",
+    "output_dir": "/hdd3/nckh-AIAgent/tyanzuq/ML/chest_xray/results_stacking",
+    "models_dir": "/hdd3/nckh-AIAgent/tyanzuq/ML/chest_xray/models_stacking",
+    "pca_variance": "0.95",
+    "random_state": "42",
+    "svm_C": "10",
+    "svm_gamma": "scale",
+    "rf_n_estimators": "300",
+    "xgb_n_estimators": "200",
+    "xgb_max_depth": "6",
+    "xgb_learning_rate": "0.1"
+  },
+  "training_time_seconds": 566.8968122005463
+}

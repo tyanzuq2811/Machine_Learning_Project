@@ -13,11 +13,8 @@ chest_xray/data_resplit/
 # === FEATURES ĐÃ TRÍCH XUẤT (.npy) ===
 chest_xray/features_resnet50/
 
-# === MÔ HÌNH ĐÃ TRAIN (.joblib) ===
-chest_xray/models_stacking/
-
-# === KẾT QUẢ ===
-chest_xray/results_stacking/
+# === MÔ HÌNH/KẾT QUẢ QUAN TRỌNG ===
+# Giữ lại trong Git: models_stacking, results_stacking
 
 # === WEBAPP UPLOADS ===
 chest_xray/webapp/static/uploads/
@@ -69,3 +66,9 @@ nohup.out
 *.pickle
 *.tar.gz
 *.zip
+
+# === Unignore artifacts cần version control ===
+!chest_xray/models_stacking/
+!chest_xray/models_stacking/*.joblib
+!chest_xray/results_stacking/
+!chest_xray/results_stacking/*.json
