@@ -1,0 +1,250 @@
+body {
+  margin: 0;
+  background: linear-gradient(180deg, #eaf4ff 0%, #f4f9ff 50%, #eef6ff 100%);
+  font-family: Arial, sans-serif;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-columns: 290px 1fr;
+  min-height: 100vh;
+}
+
+.sidebar {
+  background: linear-gradient(180deg, #0b3b6e 0%, #135ca3 45%, #1f7cc6 100%);
+  color: #e9f4ff;
+  padding: 16px;
+  border-right: 1px solid #86c5f7;
+  box-shadow: 0 10px 28px rgba(14, 74, 129, 0.25);
+}
+
+.sidebar-title {
+  margin: 0;
+  font-size: 22px;
+}
+
+.sidebar-subtitle {
+  color: #c9e8ff;
+  margin-top: 6px;
+  margin-bottom: 14px;
+}
+
+.filter-label {
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 6px;
+  font-weight: 700;
+  color: #e3f3ff;
+}
+
+.menu-list {
+  display: grid;
+  gap: 8px;
+}
+
+.menu-btn {
+  border: 1px solid rgba(212, 235, 255, 0.65);
+  background: rgba(255, 255, 255, 0.16);
+  color: #f3faff;
+  text-align: left;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.menu-btn:hover {
+  background: rgba(255, 255, 255, 0.28);
+  transform: translateY(-1px);
+}
+
+.menu-btn-alt {
+  background: rgba(18, 236, 255, 0.22);
+  border-color: rgba(173, 242, 255, 0.9);
+}
+
+.content {
+  padding: 18px;
+}
+
+.content-header {
+  background: #ffffffd9;
+  border: 1px solid #c7e4ff;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 10px 24px rgba(34, 118, 187, 0.1);
+  backdrop-filter: blur(2px);
+}
+
+.main-title {
+  margin: 0;
+  color: #0f3f73;
+  font-size: 26px;
+}
+
+.main-subtitle {
+  margin: 6px 0 0;
+  color: #3d6f9f;
+}
+
+.content-body {
+  background: #ffffffea;
+  border: 1px solid #cfe8ff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 10px 22px rgba(49, 129, 194, 0.08);
+  backdrop-filter: blur(2px);
+}
+
+.step-title {
+  margin-top: 0;
+  color: #115084;
+}
+
+.step-desc {
+  color: #335f87;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.step-list {
+  color: #335f87;
+  line-height: 1.7;
+  font-size: 15px;
+}
+
+.insight-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+  margin: 8px 0 14px;
+}
+
+.insight-card {
+  border: 1px solid #cbe5ff;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #f8fcff 0%, #eef7ff 100%);
+  padding: 12px;
+}
+
+.insight-card h4 {
+  margin: 0 0 6px;
+  color: #114e85;
+}
+
+.insight-card p {
+  margin: 0;
+  color: #315d83;
+  line-height: 1.6;
+}
+
+.formula-box {
+  margin-top: 10px;
+  border: 1px dashed #8fc8ff;
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: #2f628f;
+  background: #f3f9ff;
+}
+
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+  margin: 8px 0 10px;
+}
+
+.kpi-card {
+  border: 1px solid #b8dcff;
+  background: linear-gradient(180deg, #f2f9ff 0%, #e8f4ff 100%);
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.kpi-label {
+  font-size: 12px;
+  color: #3f6f98;
+}
+
+.kpi-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0b69b2;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.preview-card {
+  border: 1px solid #cfe6fb;
+  border-radius: 10px;
+  padding: 8px;
+  background: #f7fbff;
+}
+
+.preview-img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.preview-label {
+  margin-top: 6px;
+  font-weight: 700;
+  color: #3a678f;
+  text-align: center;
+}
+
+.sample-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.sample-card {
+  border: 1px solid #cfe6fb;
+  border-radius: 10px;
+  background: #f7fbff;
+  padding: 8px;
+}
+
+.sample-img {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.sample-meta {
+  margin-top: 6px;
+  font-weight: 700;
+  color: #184f7d;
+  font-size: 12px;
+}
+
+.sample-name {
+  color: #5d87aa;
+  font-size: 11px;
+  word-break: break-all;
+}
+
+@media (max-width: 1100px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
